@@ -21,3 +21,4 @@ jobs:
         uses: rohith/publish-nuget@v1
         with:
           project_dir: src/AspNetCore.Http.TestExtensions
+          nuget_key: ${{secrets.NUGET_API_KEY}}

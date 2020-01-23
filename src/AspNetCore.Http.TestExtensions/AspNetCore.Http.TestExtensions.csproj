@@ -6,10 +6,22 @@
     <Authors>Sam Curry</Authors>
     <Description>Extensions to assist integration testing ASP.NET Core web applications.</Description>
     <PackageTags>HttpClientFactory WebApplicationFactory TestServer TestHost Integration Test</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.0.0</Version>
+    <PackageProjectUrl>https://github.com/cuzzlor/HttpTestExtensions</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cuzzlor/HttpTestExtensions</RepositoryUrl>
+    <PackageReleaseNotes>Initial release, very little testing!</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
