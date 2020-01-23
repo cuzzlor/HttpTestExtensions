@@ -5,11 +5,17 @@ Extensions to assist integration testing ASP.NET Core web applications.
 
 > TestHost is an in-memory web host which doesn't support calls over the network
 
-**Problem**: If you have web apps that call other web apps it can be confusing to set multiple  `TestHost`s which can call each other.
+**Problem**:
+If you a web app that calls another web app in your solution, it can be tricky to set up multiple `TestHost`s which can call each other.
 
-**Solution**: The `ReplaceHttpClient` extension method supports connecting `TestHost`s via dependency injection of `HttpClient`s.
+**Solution**:
+The `ReplaceHttpClient` extension method supports connecting `TestHost`s by replacing the `HttpClient` they are injected with.
 
-*Note: this assumes an approach using `HttpClientFactory` configured in DI.*
+*Note: this assumes an [approach using `IHttpClientFactory` configuration in DI](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-3.1).*
+
+
+**Disclaimer**:
+Obviously having the complexity of one app depending on another isn't necessarily ideal and I'm not suggesting this is a pattern to replicate. However I have had the need to call into a TestHost enough times to want to be able to set this up via DI.
 
 ### Example
 
@@ -35,14 +41,14 @@ public class WebApp1Client : IWebApp1Client
 }
 ```
 
-`WebApp1Client` is set up in web app 2 (normally with configuration for the endpoint, authorization, retry policy etc):
+`WebApp1Client` is set up in `ConfigureServices`:
 
 ```cs
 services.AddHttpClient<IWebApp1Client, WebApp1Client>(client =>
                 client.BaseAddress = new Uri(Configuration["Urls:WebApp1"])));
 ```
 
-To make this work in an integration test spinning up two TestHosts, you can supply TestHost #1 with `HttpClient`s from TestHost #2:
+To make this work in an integration test that spins up two TestHosts, you can supply an `HttpClient` from one TestHost to consuming services in the other:
 
 ```cs
 builder.ConfigureServices(services =>
@@ -55,7 +61,7 @@ A working example is available in the [tests](/tests) folder. For more context r
 
 #### Integration Test
 
-A `WebApplicationFactory` test fixture provides access to the app under test.
+A `WebApplicationFactory` test fixture provides access to the app under test - completely normal.
 
 ```cs
 public class IntegrationTests : IClassFixture<WebApplicationFactory>
@@ -87,8 +93,8 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory>
 #### Test Fixture
 
 We use a custom `WebApplicationFactory<TStartup>` class to:
-- Provide access to the an instance of the web app under test
-- Provide web app #2 access to a web app #1
+- Provide access to an instance of the app under test (WebApplication2)
+- Provide access to an instance of the other app required (WebApplication1) 
 
 ```cs
 public class WebApplicationFactory : WebApplicationFactory<WebApplication2.Startup>
@@ -117,9 +123,3 @@ public class WebApplicationFactory : WebApplicationFactory<WebApplication2.Start
     }
 }
 ```
-
-
-
-
-
-
