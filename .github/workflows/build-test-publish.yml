@@ -1,0 +1,23 @@
+name: build + test + publish
+on:
+  push:
+    branches:
+    - master
+jobs:
+  build-test-publish:
+    name: publish to nuget
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.100
+      - name: Build
+        run: dotnet build
+      - name: Test
+        run: dotnet test
+      - name: Publish if version is updated
+        uses: rohith/publish-nuget@v1
+        with:
+          project_dir: src/AspNetCore.Http.TestExtensions
