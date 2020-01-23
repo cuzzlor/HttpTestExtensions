@@ -1,7 +1,23 @@
 # HttpTestExtensions
 Extensions to assist integration testing ASP.NET Core web applications.
 
-## Integration testing multiple web applications using TestHost
+## Installation
+```
+Install-Package HttpTestExtensions
+```
+
+## Usage
+```cs
+public class WebApplicationFactory : WebApplicationFactory<Startup>
+{
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        builder.ConfigureServices(services =>
+        {
+            services.ReplaceHttpClient<ISomeAppClient, SomeAppClient>(() => _someAppFactory.CreateClient());
+```
+
+## Long read: integration testing multiple web applications using TestHost
 
 > TestHost is an in-memory web host which doesn't support calls over the network
 
@@ -11,11 +27,11 @@ If you a web app that calls another web app in your solution, it can be tricky t
 **Solution**:
 The `ReplaceHttpClient` extension method supports connecting `TestHost`s by replacing the `HttpClient` they are injected with.
 
-*Note: this assumes an [approach using `IHttpClientFactory` configuration in DI](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-3.1).*
+*Note: this assumes an [approach using Typed clients `IHttpClientFactory` configuration in DI](https://docs.microsoft.com/en-us/aspnet/core/fundamentals/http-requests?view=aspnetcore-3.1#typed-clients).*
 
 
 **Disclaimer**:
-Obviously having the complexity of one app depending on another isn't necessarily ideal and I'm not suggesting this is a pattern to replicate. However I have had the need to call into a TestHost enough times to want to be able to set this up via DI.
+Obviously having the complexity of one app depending on another isn't necessarily ideal and I'm not suggesting this is a pattern to emulate. However I have had the need to call into a TestHost enough times to want to be able to set this up via DI.
 
 ### Example
 
@@ -48,7 +64,7 @@ services.AddHttpClient<IWebApp1Client, WebApp1Client>(client =>
                 client.BaseAddress = new Uri(Configuration["Urls:WebApp1"])));
 ```
 
-To make this work in an integration test that spins up two TestHosts, you can supply an `HttpClient` from one TestHost to consuming services in the other:
+To make this work in an integration test that spins up two TestHosts, you can supply an `HttpClient` from one TestHost to consuming services in the other in the TestHost `ConfigureServices` method:
 
 ```cs
 builder.ConfigureServices(services =>
@@ -123,3 +139,5 @@ public class WebApplicationFactory : WebApplicationFactory<WebApplication2.Start
     }
 }
 ```
+
+If you have the need to hook up TestHosts together, hopefully this extension makes it cleaner.
