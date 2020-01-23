@@ -9,7 +9,7 @@ Extensions to assist integration testing ASP.NET Core web applications.
 
 **Solution**: The `ReplaceHttpClient` extension method supports connecting `TestHost`s via dependency injection of `HttpClient`s.
 
-*Note: this assumes an approach using `HttpClientFactory`s configured in DI.*
+*Note: this assumes an approach using `HttpClientFactory` configured in DI.*
 
 ### Example
 
@@ -35,14 +35,14 @@ public class WebApp1Client : IWebApp1Client
 }
 ```
 
-You might set up the `WebApp1Client` in web app 2 (with endpoint, authorization, retry policy configuration etc):
+`WebApp1Client` is set up in web app 2 (normally with configuration for the endpoint, authorization, retry policy etc):
 
 ```cs
 services.AddHttpClient<IWebApp1Client, WebApp1Client>(client =>
                 client.BaseAddress = new Uri(Configuration["Urls:WebApp1"])));
 ```
 
-To make this work in integration tests, spinning up two TestHosts, you can supply `HttpClient`s from TestHost #1 to TestHost #2 in your `WebApplicationFactory.ConfigureWebHost` method.
+To make this work in an integration test spinning up two TestHosts, you can supply TestHost #1 with `HttpClient`s from TestHost #2:
 
 ```cs
 builder.ConfigureServices(services =>
@@ -51,11 +51,11 @@ builder.ConfigureServices(services =>
 });
 ```
 
-A full example is available in the [tests](/tests) folder and below:
+A working example is available in the [tests](/tests) folder. For more context read the code samples below:
 
 #### Integration Test
 
-Using a `WebApplicationFactory` as the test fixture to provide access to the app under test.
+A `WebApplicationFactory` test fixture provides access to the app under test.
 
 ```cs
 public class IntegrationTests : IClassFixture<WebApplicationFactory>
@@ -87,12 +87,13 @@ public class IntegrationTests : IClassFixture<WebApplicationFactory>
 #### Test Fixture
 
 We use a custom `WebApplicationFactory<TStartup>` class to:
-- Provide access to an web app #2 instance to test
-- Provide web app #2 access to a web app #1 instance
+- Provide access to the an instance of the web app under test
+- Provide web app #2 access to a web app #1
 
 ```cs
 public class WebApplicationFactory : WebApplicationFactory<WebApplication2.Startup>
 {
+    // we need to call WebApplication1
     private readonly WebApplicationFactory<WebApplication1.Startup> _webApplication1Factory;
 
     public WebApplicationFactory()
@@ -104,6 +105,7 @@ public class WebApplicationFactory : WebApplicationFactory<WebApplication2.Start
     {
         builder.ConfigureServices(services =>
         {
+            // provide an HttpClient from WebApplicationFactory<WebApplication1> to WebApp1Client
             services.ReplaceHttpClient<IWebApp1Client, WebApp1Client>(() => _webApplication1Factory.CreateClient());
         });
     }
