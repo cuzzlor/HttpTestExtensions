@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\HttpTestExtension\src\AspNetCore.Serilog\AspNetCore.Serilog.csproj" />
+    <ProjectReference Include="..\..\src\AspNetCore.Serilog\AspNetCore.Serilog.csproj" />
   </ItemGroup>
 
 

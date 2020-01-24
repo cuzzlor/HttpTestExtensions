@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{DE9374C8
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BE919ABA-5AB3-466D-9FED-359D20AD1BB2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.Serilog", "..\HttpTestExtension\src\AspNetCore.Serilog\AspNetCore.Serilog.csproj", "{E84CBC36-59D0-4571-9DB8-71C906D2AA0B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.Serilog", "src\AspNetCore.Serilog\AspNetCore.Serilog.csproj", "{E84CBC36-59D0-4571-9DB8-71C906D2AA0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
