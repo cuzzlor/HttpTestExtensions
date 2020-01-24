@@ -1,11 +1,9 @@
 name: build + test
-
 on:
   push:
     branches: # only run on not-master branch
-      - '*'
+      - '*/*'
       - '!master'
-
 jobs:
   build-test:
     runs-on: ubuntu-latest
