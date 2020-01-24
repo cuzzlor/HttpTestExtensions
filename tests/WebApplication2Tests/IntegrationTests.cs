@@ -1,7 +1,9 @@
+using Serilog;
 using System.Text.Json;
 using System.Threading.Tasks;
 using WebApplication1;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace WebApplication2Tests
 {
@@ -9,9 +11,14 @@ namespace WebApplication2Tests
     {
         private readonly WebApplicationFactory _sut;
 
-        public IntegrationTests(WebApplicationFactory sut)
+        public IntegrationTests(WebApplicationFactory sut, ITestOutputHelper testOutputHelper)
         {
             _sut = sut;
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Logger(Log.Logger)
+                .WriteTo.TestOutput(testOutputHelper)
+                .CreateLogger();
         }
 
         [Fact]
