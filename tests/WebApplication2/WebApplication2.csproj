@@ -4,5 +4,12 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CorrelationId" Version="3.0.0-preview.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\HttpTestExtension\src\AspNetCore.Serilog\AspNetCore.Serilog.csproj" />
+  </ItemGroup>
 
 </Project>

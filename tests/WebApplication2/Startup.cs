@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CorrelationId;
+using CorrelationId.DependencyInjection;
+using CorrelationId.HttpClient;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,8 +29,14 @@ namespace WebApplication2
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddDefaultCorrelationId(options =>
+            {
+                options.AddToLoggingScope = true;
+                options.UpdateTraceIdentifier = true;
+            });
             services.AddHttpClient<IWebApp1Client, WebApp1Client>(client =>
-                client.BaseAddress = new Uri("https://localhost:44322"));
+                client.BaseAddress = new Uri("https://localhost:44322"))
+                .AddCorrelationIdForwarding();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,6 +48,8 @@ namespace WebApplication2
             }
 
             app.UseHttpsRedirection();
+
+            app.UseCorrelationId();
 
             app.UseRouting();
 

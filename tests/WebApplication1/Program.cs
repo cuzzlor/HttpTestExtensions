@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Serilog;
+using static AspNetCore.Serilog.Program;
 
 namespace WebApplication1
 {
@@ -13,6 +9,7 @@ namespace WebApplication1
     {
         public static void Main(string[] args)
         {
+            ConfigureSerilog(args);
             CreateHostBuilder(args).Build().Run();
         }
 
@@ -21,6 +18,6 @@ namespace WebApplication1
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).UseSerilog();
     }
 }
